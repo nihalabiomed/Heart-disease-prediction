@@ -1,10 +1,10 @@
 Team Members
 
-Nihala Thajudeen
+1. Nihala Thajudeen
 
-Savin jees
+2. Savin jees
 
-Pavithra KM
+3. Pavithra KM
 
 Course:
 
