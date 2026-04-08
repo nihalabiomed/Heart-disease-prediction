@@ -10,24 +10,47 @@ Course:
 
 Predictive Analytics | Academic Year 2025-26
 
-Project Overview
+# Heart Disease Prediction AI 🩺
 
-This project predicts the presence or absence of heart disease using the Cleveland Heart Disease Dataset with 13 clinical attributes. We apply KNN, Logistic Regression, and Gradient Boosting, with feature selection using mutual information and chi-square tests. Decision boundaries, feature correlations, and model performance are visualized.
+This project uses Machine Learning to predict the presence or absence of heart disease based on 13 clinical attributes from the Cleveland Heart Disease Dataset.
 
-Dataset
+## 🚀 Project Overview
+This was developed as part of the Predictive Analytics course (Academic Year 2025-26). It covers the full data science life cycle, from data cleaning to live model deployment.
 
-Source: UCI Machine Learning Repository - Cleveland Heart Disease Dataset
-Number of features: 13 clinical attributes
-Target variable: Presence or absence of heart disease
-Project Stages
+### Team Members
+* **Nihala Thajudeen** - Lead Developer & Data Scientist
 
-Problem Definition & Literature Review
-Data Collection & Understanding
-Data Preprocessing & Cleaning
-Exploratory Data Analysis (EDA)
-Feature Engineering & Selection
-Model Building & Training
-Model Evaluation & Comparison
-Model Interpretation & Explainability
-Deployment (Streamlit)
-Documentation (README, PPT, GitHub)# Heart-Disease-Prediction-Using-Patient-Health-Data Predicting heart disease using patient health data (KNN, Logistic Regression, Gradient Boosting)
+---
+
+## 📊 Data Science Life Cycle Stages
+
+### 1. Data Collection & Understanding
+Used the **Cleveland Heart Disease Dataset** containing 303 patient records.
+* **Key Features:** Age, Cholesterol, Chest Pain Type (cp), Max Heart Rate (thalach).
+
+### 2. Exploratory Data Analysis (EDA)
+I performed EDA to find patterns. For example, I found that as age and cholesterol increase, the likelihood of heart disease tends to rise.
+
+### 3. Model Building & Comparison
+I tested three different algorithms to find the best "brain" for this task:
+* **Logistic Regression:** 88.52% Accuracy (🏆 Winner)
+* **Gradient Boosting:** 77.00% Accuracy
+* **KNN:** 68.00% Accuracy
+
+### 4. Model Interpretation
+Using feature importance, I discovered that **Chest Pain Type (cp)** and **Max Heart Rate (thalach)** are the most significant predictors in our smartest model.
+
+---
+
+## 💻 Deployment
+The model is deployed using **Streamlit**. It provides a user-friendly interface for clinicians to input patient metrics and receive an instant risk assessment.
+
+### How to run locally:
+1. Clone the repo: `git clone [YOUR_REPO_LINK]`
+2. Install requirements: `pip install -r requirements.txt`
+3. Run app: `streamlit run app.py`
+
+---
+
+## ✅ Final Results
+Our Logistic Regression model achieved an accuracy of **88.52%**, making it a viable tool for preliminary health screening support.
