@@ -44,6 +44,13 @@ Using feature importance, I discovered that **Chest Pain Type (cp)** and **Max H
 
 ## 💻 Deployment
 The model is deployed using **Streamlit**. It provides a user-friendly interface for clinicians to input patient metrics and receive an instant risk assessment.
+<img width="1440" height="900" alt="Screenshot 2026-04-08 at 8 49 55 PM" src="https://github.com/user-attachments/assets/1c9e6bb5-c69f-4f13-8de8-04e0da2e8df3" />
+
+<img width="881" height="547" alt="6ab73deb-d442-46ab-8290-1892c96d6cfb" src="https://github.com/user-attachments/assets/6cc4212b-8cbd-477d-9114-0e08be2a97fe" />
+
+<img width="567" height="435" alt="9497f973-47ec-4d19-aede-60c79c91d90d" src="https://github.com/user-attachments/assets/b6191987-5512-4c7a-a53a-d7f601cbd055" />
+
+<img width="819" height="725" alt="b1a87226-eeb3-4012-98e6-63e85b965328" src="https://github.com/user-attachments/assets/e86fecd4-661e-46aa-94ca-13fa8d3e4383" />
 
 ### How to run locally:
 1. Clone the repo: `git clone [YOUR_REPO_LINK]`
