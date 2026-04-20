@@ -105,6 +105,20 @@ print("\nModel Comparison:")
 for model, acc in results.items():
     print(f"{model}: {acc:.4f}")
 
+print("\nModel Comparison:\n")
+
+# Convert to percentage
+results_percent = {k: v * 100 for k, v in results.items()}
+
+# Find best model
+best_model = max(results_percent, key=results_percent.get)
+
+for model, acc in results_percent.items():
+    if model == best_model:
+        print(f"{model}: {acc:.2f}% Accuracy (🏆 Winner)")
+    else:
+        print(f"{model}: {acc:.2f}% Accuracy")
+
 # ==============================
 # 6. FEATURE CORRELATION
 # ==============================
