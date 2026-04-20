@@ -20,6 +20,7 @@ This was developed as part of the Predictive Analytics course (Academic Year 202
 
 ### Team Members
 * **Nihala Thajudeen** - Lead Developer & Data Scientist
+* **Pavithra K M** – Machine Learning Models, Feature Selection, Visualization
 
 ---
 
