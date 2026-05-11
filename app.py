@@ -1,3 +1,21 @@
+# --- AT THE TOP OF APP.PY ---
+import joblib
+import numpy as np
+
+# Load the brain and the scaling rules
+model = joblib.load('heart_model.pkl')
+scaler = joblib.load('scaler.pkl')
+
+# --- INSIDE THE 'IF RUN:' BLOCK ---
+# 1. Create the feature array from sidebar inputs
+input_data = np.array([[age, sex_val, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal]])
+
+# 2. SCALE the input (This is what you just fixed!)
+input_scaled = scaler.transform(input_data)
+
+# 3. PREDICT
+prediction = model.predict(input_scaled)
+
 import streamlit as st
 import pandas as pd
 import joblib
