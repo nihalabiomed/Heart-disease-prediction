@@ -95,19 +95,19 @@ except FileNotFoundError:
 with st.sidebar:
     st.markdown("""
     <div style='text-align:center; padding: 10px 0 24px 0;'>
-        <div style='font-size: 32px;'>❤️</div>
+        <div style='font-size: 32px;'>🫀</div>
         <div style='font-family: Share Tech Mono, monospace; font-size: 20px; color: #00e5ff; letter-spacing: 4px;'>CARDIOSCAN</div>
         <div style='font-size: 10px; color: #3d6680; letter-spacing: 3px;'>NEURAL RISK ENGINE v3.1</div>
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("**🧬 Patient Parameters**")
+    st.markdown("**🩻 Patient Parameters**")
     age = st.number_input("Age (years)", 1, 110, 52)
     sex = st.radio("Biological Sex", ["Male", "Female"], horizontal=True)
     sex_val = 1 if sex == "Male" else 0
 
     st.markdown("---")
-    st.markdown("**📡 Clinical Signals**")
+    st.markdown("**📋 Clinical Signals**")
     cp = st.selectbox("Chest Pain Type", [0, 1, 2, 3], format_func=lambda x: f"Type {x}")
     trestbps = st.number_input("Resting BP (mm Hg)", 90, 200, 130)
     chol = st.slider("Cholesterol (mg/dL)", 100, 500, 240)
@@ -123,7 +123,7 @@ with st.sidebar:
 # ─────────────────────────────────────────────
 # 5. HEADER & METRICS
 # ─────────────────────────────────────────────
-st.markdown("<h1>CARDIAC RISK ANALYTICS</h1>", unsafe_allow_html=True)
+st.markdown("<h1>🫀 CARDIAC RISK ANALYTICS</h1>", unsafe_allow_html=True)
 st.markdown("---")
 
 # Quick Analytics
@@ -131,10 +131,10 @@ target_hr = 220 - age
 chol_status = "ELEVATED" if chol > 240 else "NORMAL"
 
 c1, c2, c3, c4 = st.columns(4)
-c1.metric("Target HR", f"{target_hr} bpm", "Age-Max")
-c2.metric("Cholesterol", f"{chol}", chol_status)
-c3.metric("Peak HR", f"{thalach} bpm", f"Limit: {target_hr}")
-c4.metric("Vessels", f"{ca}", "Flagged")
+c1.metric("🫀 Target HR", f"{target_hr} bpm", "Age-Max")
+c2.metric("🩸 Cholesterol", f"{chol} mg/dL", chol_status)
+c3.metric("📈 Peak HR", f"{thalach} bpm", f"Limit: {target_hr}")
+c4.metric("🔬 Vessels", f"{ca}", "Fluoroscopy")
 
 st.markdown("---")
 
@@ -144,7 +144,7 @@ st.markdown("---")
 left, right = st.columns([3, 2])
 
 with right:
-    st.markdown("### ⚙️ Inference Engine")
+    st.markdown("### ⚕️ Inference Engine")
     st.markdown(f"""
     <div style='background:#0a1628; border:1px solid rgba(0,229,255,0.15); border-radius:10px; padding:20px; font-family: Share Tech Mono, monospace; font-size:12px; color:#5f8aaa; line-height:2;'>
         MODEL &nbsp; → &nbsp; K-Nearest Neighbors (KNN)<br>
@@ -153,36 +153,36 @@ with right:
     </div>
     """, unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
-    run = st.button("⚡ EXECUTE RISK ANALYSIS")
+    run = st.button("🩺 EXECUTE RISK ANALYSIS")
 
 with left:
     if run:
-        with st.spinner("🔬 Running neural inference..."):
-            time.sleep(1) # Simulation for techy feel
+        with st.spinner("🔬 Running diagnostic inference pipeline..."):
+            time.sleep(1)
 
         # 1. Create Input Array (Exactly 13 features in order)
-        raw_features = np.array([[age, sex_val, cp, trestbps, chol, fbs, 
-                                 restecg, thalach, exang, oldpeak, slope, ca, thal]])
-        
+        raw_features = np.array([[age, sex_val, cp, trestbps, chol, fbs,
+                                  restecg, thalach, exang, oldpeak, slope, ca, thal]])
+
         # 2. Scale the input using the saved scaler
         features_scaled = scaler.transform(raw_features)
 
         # 3. Predict
         prediction = model.predict(features_scaled)
-        
-        st.markdown("### 🩺 Diagnostic Report")
+
+        st.markdown("### 📊 Diagnostic Report")
         if prediction[0] == 1:
-            st.error("🟥 POSITIVE — CARDIAC RISK DETECTED")
-            st.warning("Immediate cardiology consultation advised based on clinical markers.")
+            st.error("🚨 POSITIVE — CARDIAC RISK DETECTED")
+            st.warning("⚠️ Immediate cardiology consultation advised based on clinical markers.")
         else:
-            st.success("🟩 NEGATIVE — STABLE CARDIAC PROFILE")
-            st.info("Metrics reside within safety margins. Routine monitoring recommended.")
-            st.balloons()
+            st.success("✅ NEGATIVE — STABLE CARDIAC PROFILE")
+            st.info("📋 Metrics reside within safety margins. Routine monitoring recommended.")
     else:
         st.markdown("""
         <div style='background:#0a1628; border:1px dashed rgba(0,229,255,0.2); border-radius:12px; padding:60px; text-align:center;'>
-            <div style='font-size:40px;'>🫀</div>
-            <p style='font-family: Share Tech Mono, monospace; color:#00e5ff;'>AWAITING INPUT PARAMETERS...</p>
+            <div style='font-size:40px;'>🩻</div>
+            <p style='font-family: Share Tech Mono, monospace; color:#00e5ff; letter-spacing:2px;'>AWAITING PATIENT DATA...</p>
+            <p style='font-size:11px; color:#3d6680; letter-spacing:1px;'>INPUT PARAMETERS VIA SIDEBAR · THEN EXECUTE ANALYSIS</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -190,4 +190,4 @@ with left:
 # 7. FOOTER
 # ─────────────────────────────────────────────
 st.markdown("---")
-st.markdown("<div style='text-align:center; font-size:10px; color:#3d6680;'>BIO-ARCHITECT ENGINE v3.1 | DIGITAL UNIVERSITY KERALA | RESEARCH USE ONLY</div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align:center; font-size:10px; color:#3d6680; letter-spacing:2px;'>⚕️ &nbsp; BIO-ARCHITECT ENGINE v3.1 &nbsp;·&nbsp; DIGITAL UNIVERSITY KERALA &nbsp;·&nbsp; RESEARCH USE ONLY</div>", unsafe_allow_html=True)
