@@ -27,13 +27,11 @@ html, body, [class*="css"] {
 }
 .main { background-color: #060b14; }
 
-/* Sidebar Styling */
 [data-testid="stSidebar"] {
     background: linear-gradient(180deg, #07111f 0%, #0b1a2e 100%);
     border-right: 1px solid rgba(0,229,255,0.12);
 }
 
-/* Cyber Button */
 .stButton > button {
     background: linear-gradient(135deg, #00e5ff, #0057ff);
     color: #000;
@@ -54,7 +52,6 @@ html, body, [class*="css"] {
     transform: translateY(-2px);
 }
 
-/* Metric Cards */
 [data-testid="stMetric"] {
     background: linear-gradient(135deg, #0a1628, #0f2040);
     border: 1px solid rgba(0,229,255,0.2);
@@ -72,11 +69,28 @@ h1 {
     letter-spacing: 3px;
     text-shadow: 0 0 20px rgba(0,229,255,0.4);
 }
+
+/* ── Cyan particle burst (replaces rainbow balloons) ── */
+@keyframes rise {
+    0%   { transform: translateY(0) scale(1);   opacity: 1; }
+    100% { transform: translateY(-100vh) scale(0.4); opacity: 0; }
+}
+.particle {
+    position: fixed;
+    bottom: -20px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #00e5ff;
+    box-shadow: 0 0 8px #00e5ff, 0 0 16px #00e5ff88;
+    animation: rise linear forwards;
+    z-index: 9999;
+    pointer-events: none;
+}
 </style>
 """, unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────
-# 3. LOAD ASSETS (Model & Scaler)
+# 3. LOAD ASSETS
 # ─────────────────────────────────────────────
 @st.cache_resource
 def load_assets():
@@ -87,7 +101,7 @@ def load_assets():
 try:
     model, scaler = load_assets()
 except FileNotFoundError:
-    st.error("⚠️ Model or Scaler files not found! Please ensure 'heart_model.pkl' and 'scaler.pkl' are in the repository.")
+    st.error("⚠️ Model or Scaler files not found! Ensure 'heart_model.pkl' and 'scaler.pkl' are in the repo.")
 
 # ─────────────────────────────────────────────
 # 4. SIDEBAR INPUTS
@@ -95,13 +109,14 @@ except FileNotFoundError:
 with st.sidebar:
     st.markdown("""
     <div style='text-align:center; padding: 10px 0 24px 0;'>
-        <div style='font-size: 32px;'>🫀</div>
-        <div style='font-family: Share Tech Mono, monospace; font-size: 20px; color: #00e5ff; letter-spacing: 4px;'>CARDIOSCAN</div>
+        <div style='font-size: 32px;'>🏥</div>
+        <div style='font-family: Share Tech Mono, monospace; font-size: 20px;
+                    color: #00e5ff; letter-spacing: 4px;'>CARDIOSCAN</div>
         <div style='font-size: 10px; color: #3d6680; letter-spacing: 3px;'>NEURAL RISK ENGINE v3.1</div>
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("**🩻 Patient Parameters**")
+    st.markdown("**🩻 Patient Parameters**")   # X-ray once, here only
     age = st.number_input("Age (years)", 1, 110, 52)
     sex = st.radio("Biological Sex", ["Male", "Female"], horizontal=True)
     sex_val = 1 if sex == "Male" else 0
@@ -126,15 +141,14 @@ with st.sidebar:
 st.markdown("<h1>🫀 CARDIAC RISK ANALYTICS</h1>", unsafe_allow_html=True)
 st.markdown("---")
 
-# Quick Analytics
-target_hr = 220 - age
+target_hr   = 220 - age
 chol_status = "ELEVATED" if chol > 240 else "NORMAL"
 
 c1, c2, c3, c4 = st.columns(4)
-c1.metric("🫀 Target HR", f"{target_hr} bpm", "Age-Max")
-c2.metric("🩸 Cholesterol", f"{chol} mg/dL", chol_status)
-c3.metric("📈 Peak HR", f"{thalach} bpm", f"Limit: {target_hr}")
-c4.metric("🔬 Vessels", f"{ca}", "Fluoroscopy")
+c1.metric("🫀 Target HR",     f"{target_hr} bpm",  "Age-Max")
+c2.metric("🩸 Cholesterol",   f"{chol} mg/dL",      chol_status)
+c3.metric("📈 Peak HR",       f"{thalach} bpm",     f"Limit: {target_hr}")
+c4.metric("🔬 Vessels",       f"{ca}",              "Fluoroscopy")
 
 st.markdown("---")
 
@@ -146,7 +160,10 @@ left, right = st.columns([3, 2])
 with right:
     st.markdown("### ⚕️ Inference Engine")
     st.markdown(f"""
-    <div style='background:#0a1628; border:1px solid rgba(0,229,255,0.15); border-radius:10px; padding:20px; font-family: Share Tech Mono, monospace; font-size:12px; color:#5f8aaa; line-height:2;'>
+    <div style='background:#0a1628; border:1px solid rgba(0,229,255,0.15);
+                border-radius:10px; padding:20px;
+                font-family: Share Tech Mono, monospace;
+                font-size:12px; color:#5f8aaa; line-height:2;'>
         MODEL &nbsp; → &nbsp; K-Nearest Neighbors (KNN)<br>
         ACCURACY → &nbsp; 90.16%<br>
         STATUS &nbsp; → &nbsp; Ready for Computation
@@ -160,29 +177,50 @@ with left:
         with st.spinner("🔬 Running diagnostic inference pipeline..."):
             time.sleep(1)
 
-        # 1. Create Input Array (Exactly 13 features in order)
-        raw_features = np.array([[age, sex_val, cp, trestbps, chol, fbs,
-                                  restecg, thalach, exang, oldpeak, slope, ca, thal]])
-
-        # 2. Scale the input using the saved scaler
+        raw_features   = np.array([[age, sex_val, cp, trestbps, chol, fbs,
+                                    restecg, thalach, exang, oldpeak, slope, ca, thal]])
         features_scaled = scaler.transform(raw_features)
-
-        # 3. Predict
-        prediction = model.predict(features_scaled)
+        prediction      = model.predict(features_scaled)
 
         st.markdown("### 📊 Diagnostic Report")
+
         if prediction[0] == 1:
             st.error("🚨 POSITIVE — CARDIAC RISK DETECTED")
             st.warning("⚠️ Immediate cardiology consultation advised based on clinical markers.")
         else:
             st.success("✅ NEGATIVE — STABLE CARDIAC PROFILE")
             st.info("📋 Metrics reside within safety margins. Routine monitoring recommended.")
+
+            # ── Cyan particle burst instead of rainbow balloons ──
+            import random
+            particles_html = ""
+            for i in range(60):
+                left_pct  = random.randint(0, 100)
+                duration  = round(random.uniform(1.5, 3.5), 2)
+                delay     = round(random.uniform(0, 1.5), 2)
+                size      = random.randint(6, 14)
+                shade     = random.choice(["#00e5ff", "#00cfff", "#00b8e6", "#7fffff", "#00fff7"])
+                particles_html += f"""
+                <div class='particle' style='
+                    left:{left_pct}%;
+                    width:{size}px; height:{size}px;
+                    background:{shade};
+                    box-shadow: 0 0 8px {shade};
+                    animation-duration:{duration}s;
+                    animation-delay:{delay}s;
+                '></div>"""
+            st.markdown(particles_html, unsafe_allow_html=True)
+
     else:
         st.markdown("""
-        <div style='background:#0a1628; border:1px dashed rgba(0,229,255,0.2); border-radius:12px; padding:60px; text-align:center;'>
-            <div style='font-size:40px;'>🩻</div>
-            <p style='font-family: Share Tech Mono, monospace; color:#00e5ff; letter-spacing:2px;'>AWAITING PATIENT DATA...</p>
-            <p style='font-size:11px; color:#3d6680; letter-spacing:1px;'>INPUT PARAMETERS VIA SIDEBAR · THEN EXECUTE ANALYSIS</p>
+        <div style='background:#0a1628; border:1px dashed rgba(0,229,255,0.2);
+                    border-radius:12px; padding:60px; text-align:center;'>
+            <div style='font-size:40px;'>🏥</div>
+            <p style='font-family: Share Tech Mono, monospace; color:#00e5ff;
+                      letter-spacing:2px;'>AWAITING PATIENT DATA...</p>
+            <p style='font-size:11px; color:#3d6680; letter-spacing:1px;'>
+                INPUT PARAMETERS VIA SIDEBAR · THEN EXECUTE ANALYSIS
+            </p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -190,4 +228,8 @@ with left:
 # 7. FOOTER
 # ─────────────────────────────────────────────
 st.markdown("---")
-st.markdown("<div style='text-align:center; font-size:10px; color:#3d6680; letter-spacing:2px;'>⚕️ &nbsp; BIO-ARCHITECT ENGINE v3.1 &nbsp;·&nbsp; DIGITAL UNIVERSITY KERALA &nbsp;·&nbsp; RESEARCH USE ONLY</div>", unsafe_allow_html=True)
+st.markdown("""
+<div style='text-align:center; font-size:10px; color:#3d6680; letter-spacing:2px;'>
+    ⚕️ &nbsp; BIO-ARCHITECT ENGINE v3.1 &nbsp;·&nbsp; DIGITAL UNIVERSITY KERALA &nbsp;·&nbsp; RESEARCH USE ONLY
+</div>
+""", unsafe_allow_html=True)
