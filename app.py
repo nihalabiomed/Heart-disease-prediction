@@ -70,7 +70,7 @@ h1 {
     text-shadow: 0 0 20px rgba(0,229,255,0.4);
 }
 
-/* ── Cyan particle burst (replaces rainbow balloons) ── */
+/* ── Cyan particle burst ── */
 @keyframes rise {
     0%   { transform: translateY(0) scale(1);   opacity: 1; }
     100% { transform: translateY(-100vh) scale(0.4); opacity: 0; }
@@ -90,18 +90,17 @@ h1 {
 """, unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────
-# 3. LOAD ASSETS
+# 3. LOAD ASSETS (Optimized: No Scaler Required)
 # ─────────────────────────────────────────────
 @st.cache_resource
 def load_assets():
     model = joblib.load('heart_model.pkl')
-    scaler = joblib.load('scaler.pkl')
-    return model, scaler
+    return model
 
 try:
-    model, scaler = load_assets()
+    model = load_assets()
 except FileNotFoundError:
-    st.error("⚠️ Model or Scaler files not found! Ensure 'heart_model.pkl' and 'scaler.pkl' are in the repo.")
+    st.error("⚠️ Neural weights not found! Ensure 'heart_model.pkl' is synced in the repository root.")
 
 # ─────────────────────────────────────────────
 # 4. SIDEBAR INPUTS
@@ -112,11 +111,11 @@ with st.sidebar:
         <div style='font-size: 32px;'>🏥</div>
         <div style='font-family: Share Tech Mono, monospace; font-size: 20px;
                     color: #00e5ff; letter-spacing: 4px;'>CARDIOSCAN</div>
-        <div style='font-size: 10px; color: #3d6680; letter-spacing: 3px;'>NEURAL RISK ENGINE v3.1</div>
+        <div style='font-size: 10px; color: #3d6680; letter-spacing: 3px;'>GRADIENT BOOST ENGINE v3.5</div>
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("**🩻 Patient Parameters**")   # X-ray once, here only
+    st.markdown("**🩻 Patient Parameters**")
     age = st.number_input("Age (years)", 1, 110, 52)
     sex = st.radio("Biological Sex", ["Male", "Female"], horizontal=True)
     sex_val = 1 if sex == "Male" else 0
@@ -126,14 +125,17 @@ with st.sidebar:
     cp = st.selectbox("Chest Pain Type", [0, 1, 2, 3], format_func=lambda x: f"Type {x}")
     trestbps = st.number_input("Resting BP (mm Hg)", 90, 200, 130)
     chol = st.slider("Cholesterol (mg/dL)", 100, 500, 240)
-    fbs = st.selectbox("Fasting Blood Sugar > 120", [0, 1])
-    restecg = st.selectbox("Resting ECG", [0, 1, 2])
+    
+    # Fasting Blood Sugar Selector (Maps cleanly to 0 or 1 dataset constraints)
+    fbs = st.selectbox("Fasting Blood Sugar > 120 mg/dL", [0, 1], format_func=lambda x: "True" if x == 1 else "False")
+    
+    restecg = st.selectbox("Resting ECG Status", [0, 1, 2])
     thalach = st.slider("Max Heart Rate (bpm)", 60, 220, 155)
-    exang = st.radio("Exercise Induced Angina", [0, 1], horizontal=True)
+    exang = st.radio("Exercise Induced Angina", [0, 1], horizontal=True, format_func=lambda x: "Yes" if x == 1 else "No")
     oldpeak = st.number_input("ST Depression", 0.0, 6.0, 1.0, 0.1)
-    slope = st.selectbox("Slope of ST", [0, 1, 2])
-    ca = st.selectbox("Major Vessels (0–3)", [0, 1, 2, 3])
-    thal = st.selectbox("Thalassemia", [0, 1, 2, 3])
+    slope = st.selectbox("Slope of ST Segment", [0, 1, 2])
+    ca = st.selectbox("Major Vessels via Fluoroscopy (0–3)", [0, 1, 2, 3])
+    thal = st.selectbox("Thalassemia Status", [0, 1, 2, 3])
 
 # ─────────────────────────────────────────────
 # 5. HEADER & METRICS
@@ -143,12 +145,13 @@ st.markdown("---")
 
 target_hr   = 220 - age
 chol_status = "ELEVATED" if chol > 240 else "NORMAL"
+fbs_status  = "HIGH GLUCOSE" if fbs == 1 else "STABLE GLUCOSE"
 
 c1, c2, c3, c4 = st.columns(4)
 c1.metric("🫀 Target HR",     f"{target_hr} bpm",  "Age-Max")
 c2.metric("🩸 Cholesterol",   f"{chol} mg/dL",      chol_status)
 c3.metric("📈 Peak HR",       f"{thalach} bpm",     f"Limit: {target_hr}")
-c4.metric("🔬 Vessels",       f"{ca}",              "Fluoroscopy")
+c4.metric("🧪 Fasting BS",    "🧩 > 120" if fbs == 1 else "⚖️ Normal", fbs_status)
 
 st.markdown("---")
 
@@ -164,9 +167,9 @@ with right:
                 border-radius:10px; padding:20px;
                 font-family: Share Tech Mono, monospace;
                 font-size:12px; color:#5f8aaa; line-height:2;'>
-        MODEL &nbsp; → &nbsp; K-Nearest Neighbors (KNN)<br>
-        ACCURACY → &nbsp; 90.16%<br>
-        STATUS &nbsp; → &nbsp; Ready for Computation
+        MODEL &nbsp; → &nbsp; Gradient Boosting (GBM)<br>
+        TRAINING ACCURACY → &nbsp; 77.05%<br>
+        PIPELINE &nbsp; → &nbsp; Direct Dataframe Streaming
     </div>
     """, unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
@@ -174,24 +177,30 @@ with right:
 
 with left:
     if run:
-        with st.spinner("🔬 Running diagnostic inference pipeline..."):
+        with st.spinner("🔬 Running tree-split non-linear diagnostic vector calculations..."):
             time.sleep(1)
 
-        raw_features   = np.array([[age, sex_val, cp, trestbps, chol, fbs,
-                                    restecg, thalach, exang, oldpeak, slope, ca, thal]])
-        features_scaled = scaler.transform(raw_features)
-        prediction      = model.predict(features_scaled)
+        # ─── STRUCTURED PANDAS DATAFRAME MATCHING TRAINING COLUMN HEADERS ───
+        feature_names = ['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 
+                         'restecg', 'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal']
+                         
+        raw_features_df = pd.DataFrame([[age, sex_val, cp, trestbps, chol, fbs,
+                                         restecg, thalach, exang, oldpeak, slope, ca, thal]], 
+                                       columns=feature_names)
+                                       
+        # Gradient Boosting operates straight on the dataframe features
+        prediction = model.predict(raw_features_df)
 
         st.markdown("### 📊 Diagnostic Report")
 
         if prediction[0] == 1:
             st.error("🚨 POSITIVE — CARDIAC RISK DETECTED")
-            st.warning("⚠️ Immediate cardiology consultation advised based on clinical markers.")
+            st.warning("⚠️ Immediate cardiology consultation advised based on decision tree thresholds.")
         else:
             st.success("✅ NEGATIVE — STABLE CARDIAC PROFILE")
-            st.info("📋 Metrics reside within safety margins. Routine monitoring recommended.")
+            st.info("📋 Patient biometric signatures fall safely within baseline homeostatic boundaries.")
 
-            # ── Cyan particle burst instead of rainbow balloons ──
+            # ── Cyan particle burst ──
             import random
             particles_html = ""
             for i in range(60):
@@ -230,6 +239,6 @@ with left:
 st.markdown("---")
 st.markdown("""
 <div style='text-align:center; font-size:10px; color:#3d6680; letter-spacing:2px;'>
-    ⚕️ &nbsp; BIO-ARCHITECT ENGINE v3.1 &nbsp;·&nbsp; DIGITAL UNIVERSITY KERALA &nbsp;·&nbsp; RESEARCH USE ONLY
+    ⚕️ &nbsp; BIO-ARCHITECT ENGINE v3.5 &nbsp;·&nbsp; DIGITAL UNIVERSITY KERALA &nbsp;·&nbsp; RESEARCH USE ONLY
 </div>
 """, unsafe_allow_html=True)
