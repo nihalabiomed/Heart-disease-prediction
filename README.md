@@ -2,7 +2,7 @@ Team Members
   
 1. Nihala Thajudeen
 
- 2. Savin jees V
+ 2. Savin Jees V
 
 3. Pavithra KM
 
