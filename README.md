@@ -11,7 +11,7 @@ Course:
 Predictive Analytics | Academic Year 2025-26
 
 # Heart Disease Prediction AI 🩺
-https://nihalabiomed-heart-disease-prediction-app-vnrlqu.streamlit.app
+https://heart-disease-prediction-gbqx5ugsscd29nyz4bakls.streamlit.app
 
 This project uses Machine Learning to predict the presence or absence of heart disease based on 13 clinical attributes from the Cleveland Heart Disease Dataset.
 
