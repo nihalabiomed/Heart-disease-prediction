@@ -28,7 +28,7 @@ We benchmarked multiple predictive frameworks during exploration, finding that a
 * **Gradient Boosting:** 77.05% Accuracy
 
 ### 🔍 Streamlined Feature Space (Core Vitals)
-Using predictive feature evaluation, the interface was condensed down to the **5 most statistically significant biometrics** to maximize interface scannability and eliminate data entry lag and get more accurate results:
+Using predictive feature evaluation, the interface was condensed down to the **5 most statistically significant biometrics** to maximize interface scannability and eliminate data entry lag and reduce feature noise:
 1. **Age** (Patient Demographic Baseline)
 2. **Sex** (Biological Marker)
 3. **Chest Pain Severity (cp)** (Primary Symptomatic Signal)
