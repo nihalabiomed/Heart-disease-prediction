@@ -28,12 +28,18 @@ We benchmarked multiple predictive frameworks during exploration, finding that a
 * **Gradient Boosting:** 77.05% Accuracy
 
 ### 🔍 Streamlined Feature Space (Core Vitals)
-Using predictive feature evaluation, the interface was condensed down to the **5 most statistically significant biometrics** to maximize interface scannability and eliminate data entry lag:
+Using predictive feature evaluation, the interface was condensed down to the **5 most statistically significant biometrics** to maximize interface scannability and eliminate data entry lag and get more accurate results:
 1. **Age** (Patient Demographic Baseline)
 2. **Sex** (Biological Marker)
 3. **Chest Pain Severity (cp)** (Primary Symptomatic Signal)
 4. **Serum Cholesterol (chol)** (Primary Metabolic Signal)
 5. **Maximum Heart Rate Achieved (thalach)** (Cardiovascular Cap Limit)
+
+
+<img width="790" height="590" alt="b7513fb1-f384-43f2-b684-e73d5bb1467c" src="https://github.com/user-attachments/assets/ab70b4fe-73e7-4fa3-b298-dba3ddc4891b" />
+<img width="989" height="490" alt="8652c6f6-5035-4d17-825b-417e3e06dbcc" src="https://github.com/user-attachments/assets/c2685ccf-14e4-43f9-90f9-27829fdd649a" />
+<img width="989" height="490" alt="024e2062-4652-4172-af54-ae7d813d6e67" src="https://github.com/user-attachments/assets/21d7c423-d023-4ca6-aae0-81321db4e365" />
+<img width="1103" height="790" alt="bb023f46-edc2-4d66-b5e0-46f47b9f8aa2" src="https://github.com/user-attachments/assets/865e2f0e-ce72-4c34-98ba-40de8b45df83" />
 
 ---
 
