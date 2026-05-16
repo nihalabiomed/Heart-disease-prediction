@@ -2,7 +2,7 @@ Team Members
   
 1. Nihala Thajudeen - 253220 - MSc Datascience and BioAI
 
- 2. Savin Jees V-  - 253211 MSc Datascience and BioAI
+ 2. Savin Jees V-  - 253211 - MSc Datascience and BioAI
 
 3. Pavithra KM
 
