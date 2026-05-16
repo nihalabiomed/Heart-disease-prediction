@@ -4,7 +4,7 @@ Team Members
 
  2. Savin Jees V-  - 253211 - MSc Datascience and BioAI
 
-3. Pavithra KM
+3. Pavithra K M-  - 253211 - MSC Data Analytics and Computational Science
 
 Course:
 
